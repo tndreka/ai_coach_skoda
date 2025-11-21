@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Skill Coach - Loading</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: .5;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-[#18342B] via-[#1a4d3a] to-[#18342B] flex items-center justify-center p-4">
+    <div class="text-center">
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-white mb-4">Loading Your Profile</h2>
+            <p class="text-white/80 text-lg">Preparing your personalized dashboard...</p>
+        </div>
+
+        <div class="w-32 h-32 mx-auto relative mb-8">
+            <svg class="w-full h-full -rotate-90">
+                <circle
+                    cx="64"
+                    cy="64"
+                    r="56"
+                    stroke="rgba(255, 255, 255, 0.1)"
+                    stroke-width="8"
+                    fill="none"
+                />
+                <circle
+                    id="progressCircle"
+                    cx="64"
+                    cy="64"
+                    r="56"
+                    stroke="#4BA82E"
+                    stroke-width="8"
+                    fill="none"
+                    stroke-linecap="round"
+                    class="transition-all duration-300 ease-out"
+                    style="
+                        filter: drop-shadow(0 0 8px rgba(75, 168, 46, 0.5));
+                        stroke-dasharray: 351.86;
+                        stroke-dashoffset: 351.86;
+                    "
+                />
+            </svg>
+
+            <div class="absolute inset-0 flex items-center justify-center">
+                <div class="relative">
+                    <img
+                        src="/logo.png"
+                        alt="Skoda"
+                        class="h-16 w-auto animate-pulse"
+                    />
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <div class="text-2xl font-bold text-white mb-2">
+                <span id="progressPercent">0</span>%
+            </div>
+            <p class="text-white/60" id="loadingText">Initializing...</p>
+        </div>
+
+        <div class="max-w-md mx-auto">
+            <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-left">
+                <h3 class="text-lg font-semibold text-white mb-3">What we're preparing:</h3>
+                <ul class="space-y-2 text-sm text-white/80">
+                    <li class="flex items-center">
+                        <div class="w-2 h-2 bg-[#4BA82E] rounded-full mr-3"></div>
+                        Your skill assessment
+                    </li>
+                    <li class="flex items-center">
+                        <div class="w-2 h-2 bg-[#4BA82E] rounded-full mr-3"></div>
+                        Personalized learning paths
+                    </li>
+                    <li class="flex items-center">
+                        <div class="w-2 h-2 bg-[#4BA82E] rounded-full mr-3"></div>
+                        AI-powered recommendations
+                    </li>
+                    <li class="flex items-center">
+                        <div class="w-2 h-2 bg-[#4BA82E] rounded-full mr-3"></div>
+                        Performance dashboard
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let progress = 0;
+        const progressCircle = document.getElementById('progressCircle');
+        const progressPercent = document.getElementById('progressPercent');
+        const loadingText = document.getElementById('loadingText');
+        
+        const circumference = 2 * Math.PI * 56; // 2πr
+        const loadingMessages = [
+            "Initializing...",
+            "Analyzing your profile...",
+            "Processing skill data...",
+            "Generating recommendations...",
+            "Preparing dashboard...",
+            "Almost ready!"
+        ];
+
+        const duration = 5000; // 5 seconds
+        const interval = 50; // Update every 50ms
+        const increment = (interval / duration) * 100;
+
+        const timer = setInterval(() => {
+            progress += increment;
+            
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(timer);
+                
+                // Redirect to dashboard after completion
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 500);
+            }
+
+            // Update progress circle
+            const offset = circumference * (1 - progress / 100);
+            progressCircle.style.strokeDashoffset = offset;
+            
+            // Update percentage text
+            progressPercent.textContent = Math.round(progress);
+            
+            // Update loading message based on progress
+            const messageIndex = Math.min(Math.floor(progress / 20), loadingMessages.length - 1);
+            loadingText.textContent = loadingMessages[messageIndex];
+            
+        }, interval);
+
+        // Check if user came from login
+        const currentEmployee = localStorage.getItem('currentEmployee');
+        if (!currentEmployee) {
+            // Redirect back to login if no employee data
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

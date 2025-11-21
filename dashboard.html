@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Skill Coach - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body class="min-h-screen bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <img src="/logo.png" alt="Skoda" class="h-10 w-auto">
+                    <div class="h-8 w-px bg-gray-300"></div>
+                    <h1 class="text-xl font-bold text-gray-900">AI Skill Coach</h1>
+                </div>
+
+                <div class="flex items-center space-x-6">
+                    <div class="text-right">
+                        <div class="text-sm font-semibold text-gray-900" id="userName">Loading...</div>
+                        <div class="text-xs text-gray-500" id="personalNumber">Loading...</div>
+                    </div>
+                    <div class="h-10 w-px bg-gray-300"></div>
+                    <button
+                        onclick="logout()"
+                        class="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
+                    >
+                        <i data-lucide="log-out" class="h-5 w-5"></i>
+                        <span class="text-sm font-medium">Logout</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-gray-900 mb-2">
+                Welcome back, <span id="welcomeName">User</span>!
+            </h2>
+            <p class="text-gray-600">
+                Here is your personalized skill development dashboard.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Personal Info Card -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center space-x-3 mb-6">
+                    <div class="bg-[#4BA82E] p-2 rounded-lg">
+                        <i data-lucide="graduation-cap" class="h-6 w-6 text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900">Your Profile</h3>
+                </div>
+
+                <div class="space-y-4" id="profileInfo">
+                    <!-- Profile info will be populated by JavaScript -->
+                </div>
+
+                <div class="mt-6 p-4 bg-gradient-to-r from-[#18342B] to-[#1a4d3a] rounded-lg">
+                    <div class="text-white">
+                        <div class="text-sm opacity-90 mb-1">Company Mission</div>
+                        <div class="font-semibold text-lg">
+                            Driving Innovation Forward
+                        </div>
+                        <p class="text-sm opacity-80 mt-2">
+                            Building the future of mobility with sustainable and intelligent solutions
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Skills Overview Card -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center space-x-3 mb-6">
+                    <div class="bg-[#4BA82E] p-2 rounded-lg">
+                        <i data-lucide="award" class="h-6 w-6 text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900">Skills Overview</h3>
+                </div>
+
+                <div class="mb-6">
+                    <div class="text-sm text-gray-500 mb-3">Your Current Skills</div>
+                    <div class="flex flex-wrap gap-2 max-h-32 overflow-y-auto pr-2" id="currentSkills">
+                        <!-- Skills will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="mb-4" id="missingSkillsSection">
+                    <div class="text-sm text-gray-500 mb-3">Top Missing Skills for Your Position</div>
+                    <div class="flex flex-wrap gap-2" id="missingSkills">
+                        <!-- Missing skills will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Learning Paths Section -->
+        <div class="mb-8" id="learningPathsSection">
+            <h3 class="text-2xl font-bold text-gray-900 mb-4">Recommended Learning Paths</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="learningPaths">
+                <!-- Learning paths will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+                <div class="text-3xl font-bold text-[#4BA82E] mb-2" id="currentSkillsCount">0</div>
+                <div class="text-gray-600">Current Skills</div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+                <div class="text-3xl font-bold text-amber-600 mb-2" id="missingSkillsCount">0</div>
+                <div class="text-gray-600">Skills to Develop</div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+                <div class="text-3xl font-bold text-[#4BA82E] mb-2" id="learningPathsCount">0</div>
+                <div class="text-gray-600">Learning Paths</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Chat Button -->
+    <button
+        onclick="toggleChat()"
+        class="fixed bottom-8 right-8 bg-[#4BA82E] hover:bg-[#3d8f25] text-white rounded-full p-4 shadow-lg hover:shadow-xl transition-all duration-200 group"
+    >
+        <i data-lucide="message-circle" class="h-6 w-6"></i>
+        <span class="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-gray-900 text-white text-sm px-3 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+            AI Coach Chat
+        </span>
+    </button>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Sample full employee data
+        const fullEmployeeData = {
+            "34284": {
+                "personal_number": "34284",
+                "user_name": "DZCPS33",
+                "profession": "002 Koordinátor/ka",
+                "planned_position": "Koordinátor - Mechanika a Logistika",
+                "education": {
+                    "field": "Pedagogika",
+                    "category": "Vysokoškolské magisterské vzdělání"
+                },
+                "profile_ai": {
+                    "skills_ai": [
+                        "3D Printing Operation", "Anti-Corruption", "Competition Law", 
+                        "Driving Company Vehicles", "Electrical Safety", "Energy Management",
+                        "Ergonomics", "Facilitation", "Feedback", "Fire Safety",
+                        "Fraud Prevention", "German Language", "HR Compliance",
+                        "Information Security Management", "Leadership", "Pedagogy",
+                        "Personal Data Protection", "Project Management", "Quality Management",
+                        "Workplace Safety"
+                    ],
+                    "missing_skills_ranked": [
+                        "Safety Regulation Compliance", "Process Optimization", 
+                        "Project Coordination", "Quality Control", "Logistics Management"
+                    ],
+                    "recommended_learning_paths": [
+                        {
+                            "title": "Operational Excellence and Safety Mastery",
+                            "purpose": "To build a strong foundation in safety compliance and operational best practices.",
+                            "focus_skills": ["Safety Regulation Compliance", "Process Optimization", "Quality Control"],
+                            "suggested_actions": [
+                                "Enroll in an occupational safety training course.",
+                                "Attend workshops on identifying process bottlenecks.",
+                                "Study quality assurance methodologies such as Six Sigma or Lean."
+                            ]
+                        },
+                        {
+                            "title": "Project and Logistics Leadership Pathway",
+                            "purpose": "To develop strong skills in coordinating projects and managing logistics effectively.",
+                            "focus_skills": ["Project Coordination", "Logistics Management", "Process Optimization"],
+                            "suggested_actions": [
+                                "Participate in a project management fundamentals course.",
+                                "Work with the logistics team to understand supply chain workflows.",
+                                "Use project management software to track progress."
+                            ]
+                        }
+                    ]
+                }
+            }
+        };
+
+        function populateDashboard() {
+            const storedEmployee = localStorage.getItem('currentEmployee');
+            
+            if (!storedEmployee) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const basicEmployee = JSON.parse(storedEmployee);
+            const fullEmployee = fullEmployeeData[basicEmployee.personal_number];
+            
+            if (!fullEmployee) {
+                console.warn('Full employee data not found, using basic data');
+                displayBasicEmployeeData(basicEmployee);
+                return;
+            }
+
+            // Populate header
+            document.getElementById('userName').textContent = fullEmployee.user_name || 'User';
+            document.getElementById('personalNumber').textContent = fullEmployee.personal_number || 'N/A';
+            document.getElementById('welcomeName').textContent = fullEmployee.user_name || 'User';
+
+            // Populate profile info
+            populateProfileInfo(fullEmployee);
+
+            // Populate skills
+            populateSkills(fullEmployee);
+
+            // Populate learning paths
+            populateLearningPaths(fullEmployee);
+
+            // Update stats
+            updateStats(fullEmployee);
+        }
+
+        function displayBasicEmployeeData(employee) {
+            document.getElementById('userName').textContent = employee.user_name || 'User';
+            document.getElementById('personalNumber').textContent = employee.personal_number || 'N/A';
+            document.getElementById('welcomeName').textContent = employee.user_name || 'User';
+            
+            const profileInfo = document.getElementById('profileInfo');
+            profileInfo.innerHTML = `
+                <div class="border-l-4 border-[#4BA82E] pl-4 py-2">
+                    <div class="text-sm text-gray-500">Current Profession</div>
+                    <div class="font-semibold text-gray-900">${employee.profession || 'N/A'}</div>
+                </div>
+                <div class="border-l-4 border-[#4BA82E] pl-4 py-2">
+                    <div class="text-sm text-gray-500">Planned Position</div>
+                    <div class="font-semibold text-gray-900">${employee.planned_position || 'N/A'}</div>
+                </div>
+            `;
+        }
+
+        function populateProfileInfo(employee) {
+            const profileInfo = document.getElementById('profileInfo');
+            let html = '';
+
+            if (employee.profession) {
+                html += `
+                    <div class="border-l-4 border-[#4BA82E] pl-4 py-2">
+                        <div class="text-sm text-gray-500">Current Profession</div>
+                        <div class="font-semibold text-gray-900">${employee.profession}</div>
+                    </div>
+                `;
+            }
+
+            if (employee.planned_position) {
+                html += `
+                    <div class="border-l-4 border-[#4BA82E] pl-4 py-2">
+                        <div class="text-sm text-gray-500">Planned Position</div>
+                        <div class="font-semibold text-gray-900">${employee.planned_position}</div>
+                    </div>
+                `;
+            }
+
+            if (employee.education) {
+                html += `
+                    <div class="border-l-4 border-[#4BA82E] pl-4 py-2">
+                        <div class="text-sm text-gray-500">Education</div>
+                        <div class="font-semibold text-gray-900">${employee.education.category}</div>
+                        ${employee.education.field ? `<div class="text-xs text-gray-500 mt-1">Field: ${employee.education.field}</div>` : ''}
+                    </div>
+                `;
+            }
+
+            profileInfo.innerHTML = html;
+        }
+
+        function populateSkills(employee) {
+            const currentSkills = document.getElementById('currentSkills');
+            const missingSkills = document.getElementById('missingSkills');
+
+            // Current skills
+            if (employee.profile_ai?.skills_ai) {
+                currentSkills.innerHTML = employee.profile_ai.skills_ai.map(skill => 
+                    `<span class="px-3 py-1 bg-gradient-to-r from-[#4BA82E] to-[#3d8f25] text-white rounded-full text-xs font-medium shadow-sm">${skill}</span>`
+                ).join('');
+            }
+
+            // Missing skills
+            if (employee.profile_ai?.missing_skills_ranked) {
+                missingSkills.innerHTML = employee.profile_ai.missing_skills_ranked.slice(0, 5).map(skill => 
+                    `<span class="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-medium border border-amber-200 flex items-center gap-1.5">
+                        <i data-lucide="alert-triangle" class="h-3 w-3"></i>
+                        ${skill}
+                    </span>`
+                ).join('');
+            }
+        }
+
+        function populateLearningPaths(employee) {
+            const learningPaths = document.getElementById('learningPaths');
+            const learningPathsSection = document.getElementById('learningPathsSection');
+
+            if (employee.profile_ai?.recommended_learning_paths?.length > 0) {
+                learningPathsSection.style.display = 'block';
+                learningPaths.innerHTML = employee.profile_ai.recommended_learning_paths.map(path => `
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <i data-lucide="target" class="h-6 w-6 text-[#4BA82E]"></i>
+                            <h4 class="font-bold text-lg text-gray-900">${path.title}</h4>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-4">${path.purpose}</p>
+                        
+                        ${path.focus_skills ? `
+                            <div class="mb-4">
+                                <div class="text-sm font-semibold text-gray-700 mb-2">Focus Skills:</div>
+                                <div class="flex flex-wrap gap-2">
+                                    ${path.focus_skills.map(skill => 
+                                        `<span class="px-2 py-0.5 bg-gray-100 text-gray-800 rounded-md text-xs font-medium">${skill}</span>`
+                                    ).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+
+                        ${path.suggested_actions ? `
+                            <div>
+                                <div class="text-sm font-semibold text-gray-700 mb-2">Suggested Actions:</div>
+                                <ul class="text-sm text-gray-600 space-y-1.5 list-disc list-inside">
+                                    ${path.suggested_actions.map(action => `<li>${action}</li>`).join('')}
+                                </ul>
+                            </div>
+                        ` : ''}
+                    </div>
+                `).join('');
+            } else {
+                learningPathsSection.style.display = 'none';
+            }
+        }
+
+        function updateStats(employee) {
+            document.getElementById('currentSkillsCount').textContent = employee.profile_ai?.skills_ai?.length || 0;
+            document.getElementById('missingSkillsCount').textContent = employee.profile_ai?.missing_skills_ranked?.length || 0;
+            document.getElementById('learningPathsCount').textContent = employee.profile_ai?.recommended_learning_paths?.length || 0;
+        }
+
+        function logout() {
+            localStorage.removeItem('currentEmployee');
+            window.location.href = 'login.html';
+        }
+
+        function toggleChat() {
+            alert('Chat feature coming soon!');
+        }
+
+        // Initialize dashboard when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            populateDashboard();
+            // Re-initialize icons after dynamic content is added
+            setTimeout(() => lucide.createIcons(), 100);
+        });
+    </script>
+</body>
+</html>
